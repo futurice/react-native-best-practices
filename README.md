@@ -30,7 +30,7 @@ Creative Commons Attribution 4.0 International (CC BY 4.0)
 
   Emotion 
 * Integrating with Redux
-* Input management
+* Form data management
   * Formik vs redux-form vs vanilla
 * Animations
   * Static ( Lottie )
@@ -41,3 +41,20 @@ Creative Commons Attribution 4.0 International (CC BY 4.0)
 * App Center
 * Circle CI
 * Manual
+
+## Form data management
+
+**In short,** avoid `redux-form`, begin with simple state, check out `formik` if needed
+
+React Native in practice has no opinion regarding data management, the amount of possible approaches is numerous. However, due to mobile nature of RN applications a few requirements must be considered – an ability to easily split forms into steps or screens and persisting data across screens.
+
+Numerous approaches are widely used in RN applications, the table below outlines most of them and gives an opinion based on previous experience with the technology
+
+Name | Good parts | Bad parts | Opinion
+--- | --- | --- | ---
+[redux-form](https://github.com/erikras/redux-form/) | Might be easy to install if you already have Redux in place | Extra level of abstraction. Redux store gets polluted with unnecessary data. Making changes triggers the whole sequence of actions being dispatched. Big library size ([100.3 kB minified](https://bundlephobia.com/result?p=redux-form@8.2.4)) | In most of the projects maintenance was making developers life much harder, making managing data a painful experience. Adviced against use of the library
+[formik](https://github.com/jaredpalmer/formik) | Changes are stored in internal state of a parentcomponent. Nice support for field validation and error handling. Nicer library size ([43 kB minified](https://bundlephobia.com/result?p=formik@1.5.7)) | Since data is stored in formik's component's internal state it might be hard to keep track of all changing events. | A performant and simple solution. Flexible API allows to handle input validation and most of the typical operations
+`state` | Performance, "nativeness", any type of custom scenarios, flexibility, transparency | Creating logic for custom validation and error handling might be time consuming. Created custom patterns might be difficult to maintain in future | The best approach if no validation is required or the project is relatively small. Can be easily refactored to formik in case of increased complexity
+
+`redux-form` is one of the most popular libraries for managing form data. However, judging from the experience of many developers, this approach was brining more problems rather than benefits. First of all, the idea of keeping form's state and all validation results and errors as well as touched/blurred/registered states fills the store with irrelevant data. Making changes to input fields launches redux action, which can make it hard to travers redux events history.
+While `formik` is a great solution, it is based on basic state manipulation, so the advised approach would be to start with `state` actions whether using hooks or not and refactor to `formik` if needed.
